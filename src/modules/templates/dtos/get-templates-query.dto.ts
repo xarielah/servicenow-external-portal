@@ -13,7 +13,7 @@ export class GetTemplatesQueryDto {
 
   @IsOptional()
   @Type(() => Number)
-  @Max(20)
+  @Max(100)
   @Min(1)
   @IsNumber()
   limit: number = 5;
