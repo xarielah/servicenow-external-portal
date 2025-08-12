@@ -102,24 +102,10 @@ export class TemplatesControllerV1 {
       const knowledge =
         await this.templateService.getTemplateKbs(templateIdStr);
 
-      return { ...template, relatedArticles: knowledge, fields: res };
+      return { ...template, articles: knowledge, fields: res };
     } catch (error) {
       this.logger.error('getIncident: ' + error);
       throw new BadRequestException();
     }
-  }
-
-  @Post('/knowledge/:templateId')
-  @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: `Get template's knowledge articles` })
-  async getTemplateKnowledge(@Param('templateId') templateId: number) {
-    return [];
-  }
-
-  @Post('/alerts/:templateId')
-  @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: `Get template's alerts / instructions` })
-  async getTemplateAlerts(@Param('templateId') templateId: number) {
-    return [];
   }
 }
