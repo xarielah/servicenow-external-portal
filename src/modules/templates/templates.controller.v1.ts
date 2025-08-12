@@ -34,9 +34,6 @@ export class TemplatesControllerV1 {
   @HttpCode(HttpStatus.OK)
   async getTemplates(@Query() query: TemplatesQueryDto) {
     try {
-      this.logger.log(
-        `Getting templates with params: limit=${query.limit}, search=${query.search}, skip=${query.skip}`,
-      );
       const result = await this.templateService.getAll(query);
       return result;
     } catch (error) {
@@ -69,10 +66,6 @@ export class TemplatesControllerV1 {
       throw new BadRequestException();
     }
   }
-
-  // TODO:
-  // Add KB fetch
-  // Add alerts fetch
 
   @Post('/:templateId')
   @ApiOperation({ summary: `Get template's fields and options` })

@@ -152,7 +152,7 @@ export class TemplatesService {
   async getTemplateFields(templateId: string): Promise<TemplateFieldDto[]> {
     const extraParams: ExtraParams = {
       sysparm_fields:
-        'sys_id,option,mandatory,include_none,question_text,cat_item.sys_id,name,help_tag,validate_regex,type,u_external_classname',
+        'sys_id,option,mandatory,include_none,question_text,validate_regex,cat_item.sys_id,name,help_tag,validate_regex,type,u_external_classname',
       sysparm_display_value: 'true',
       sysparm_exclude_reference_link: 'true',
       sysparm_query: `ORDERBYorder^active=true^cat_item.active=true^cat_item.ref_sc_cat_item_producer.u_id=${templateId}`,

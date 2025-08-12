@@ -31,6 +31,10 @@ export class TemplateFieldDto {
   @ApiProperty({ description: 'Classname of the field' })
   className: string;
 
+  @Expose({ name: 'validate_regex' })
+  @ApiProperty({ description: 'Validation of the field' })
+  validation?: string;
+
   @Expose({ name: 'options' })
   @ApiProperty({ description: 'Options for the field' })
   options: OptionDto[] | null;
