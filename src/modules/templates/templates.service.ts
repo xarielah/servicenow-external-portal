@@ -155,7 +155,7 @@ export class TemplatesService {
         'sys_id,option,mandatory,include_none,question_text,cat_item.sys_id,name,help_tag,validate_regex,type,u_external_classname',
       sysparm_display_value: 'true',
       sysparm_exclude_reference_link: 'true',
-      sysparm_query: `ORDERBYorder^active=true^cat_item.active=true^cat_item.ref_sc_cat_item_producer.sys_id=${templateId}`,
+      sysparm_query: `ORDERBYorder^active=true^cat_item.active=true^cat_item.ref_sc_cat_item_producer.u_id=${templateId}`,
     };
 
     // First we want to check if there are any variable sets associated with the template,
@@ -211,6 +211,7 @@ export class TemplatesService {
     );
 
     const response = await res.json();
+    console.log('🚀 ~ TemplatesService ~ getOptions ~ response:', response);
     if (!response.result) return [];
 
     // Transform the response to an Option object array
