@@ -33,6 +33,7 @@ export class TemplatesControllerV1 {
   async getTemplates(@Query() query: TemplatesQueryDto) {
     try {
       const result = await this.templateService.getAll(query);
+
       return result;
     } catch (error) {
       this.logger.error('getTemplates: ' + error);
@@ -98,7 +99,10 @@ export class TemplatesControllerV1 {
       // Filter out unwanted field types so they don't reach to the frontend.
       res = res.filter((field: any) => !['Custom'].includes(field.type));
 
-      return { ...template, fields: res };
+      const knowledge =
+        await this.templateService.getTemplateKbs(templateIdStr);
+
+      return { ...template, relatedArticles: knowledge, fields: res };
     } catch (error) {
       this.logger.error('getIncident: ' + error);
       throw new BadRequestException();

@@ -17,16 +17,12 @@ export class TemplateFieldDto {
 
   @Expose({ name: 'mandatory' })
   @ApiProperty({ description: 'Is the field mandatory' })
-  @Transform((mandatoryAttribute) => mandatoryAttribute.value === 'true')
+  @Transform(({ value }) => value === 'true')
   mandatory: boolean;
 
   @Expose({ name: 'name' })
   @ApiProperty({ description: 'Name of the template' })
   name: string;
-
-  @Expose({ name: 'cat_item.sys_id' })
-  @ApiProperty({ description: 'Unique numeric ID of the template' })
-  templateId: string;
 
   @Expose({ name: 'u_external_classname' })
   @ApiProperty({ description: 'Classname of the field' })

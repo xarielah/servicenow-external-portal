@@ -3,6 +3,8 @@ import { plainToInstance } from 'class-transformer';
 import { ServiceNowService } from '../service-now/service-now.service';
 import { OptionDto } from './dtos/option.dto';
 import { TemplateFieldDto } from './dtos/template-field.dto';
+import { TemplateKnowledgeDto } from './dtos/template-knowledge.dto';
+import { TemplatePreviewDto } from './dtos/template-preview';
 import { TemplateDto } from './dtos/template.dto';
 import { TemplatesQueryDto } from './dtos/templates-query.dto';
 import { VariableSetDto } from './dtos/variable-set.dto';
@@ -15,9 +17,9 @@ export class TemplatesService {
   /**
    * Get templates list.
    * @param {TemplatesQueryDto} params
-   * @returns {TemplateDto[]}
+   * @returns {TemplatePreviewDto[]}
    */
-  async getAll(params: TemplatesQueryDto): Promise<TemplateDto[]> {
+  async getAll(params: TemplatesQueryDto): Promise<TemplatePreviewDto[]> {
     const { search, skip, limit } = params;
     const extraParams: ExtraParams = {
       sysparm_fields: 'sys_id,u_id,name,short_description',
@@ -43,15 +45,19 @@ export class TemplatesService {
       `/api/now/table/sc_cat_item_producer?${queryParams}`,
     );
 
-    const response: Awaited<{ result: any[] }> = await res.json();
+    const response = await res.json();
 
     // If no result property found, return an empty array
     if (!response.result) return [];
 
     // Transform the response to a Template object
-    const transformed = plainToInstance(TemplateDto, response.result, {
-      excludeExtraneousValues: true,
-    });
+    const transformed = plainToInstance(
+      TemplatePreviewDto,
+      response.result as [],
+      {
+        excludeExtraneousValues: true,
+      },
+    );
 
     return transformed;
   }
@@ -87,7 +93,8 @@ export class TemplatesService {
    */
   async getTemplateById(templateId: string): Promise<TemplateDto | null> {
     const extraParams: ExtraParams = {
-      sysparm_fields: 'sys_id,u_id,name,short_description',
+      sysparm_fields:
+        'sys_id,u_id,name,short_description,u_show_form_instruction,u_form_instructions',
       sysparm_display_value: 'true',
       sysparm_exclude_reference_link: 'true',
       sysparm_query: `u_external=true^active=true^u_idISNOTEMPTY^u_id=${templateId}`,
@@ -106,6 +113,10 @@ export class TemplatesService {
     const transformed = plainToInstance(TemplateDto, response.result[0], {
       excludeExtraneousValues: true,
     });
+
+    if (!transformed.show_instructions) {
+      transformed.instructions = undefined;
+    }
 
     return transformed;
   }
@@ -217,6 +228,35 @@ export class TemplatesService {
     const transformed = plainToInstance<OptionDto, OptionDto[]>(
       OptionDto,
       response.result,
+      {
+        excludeExtraneousValues: true,
+      },
+    );
+
+    return transformed;
+  }
+
+  async getTemplateKbs(templateId: string): Promise<TemplateKnowledgeDto[]> {
+    const extraParams: ExtraParams = {
+      sysparm_fields: 'sys_id,u_name,u_short_description,u_url',
+      sysparm_display_value: 'true',
+      sysparm_exclude_reference_link: 'true',
+      sysparm_query: `active=true^sc_cat_item.ref_sc_cat_item_producer.u_external=true^sc_cat_item.ref_sc_cat_item_producer.u_id=${templateId}`,
+    };
+
+    const queryParams = new URLSearchParams(extraParams).toString();
+
+    const res = await this.serviceNowService.fetch(
+      `/api/now/table/sc_2_kb?${queryParams}`,
+    );
+
+    const response = await res.json();
+    if (!response.result) return [];
+
+    // Transform the response to a KnowledgeArticle object
+    const transformed = plainToInstance(
+      TemplateKnowledgeDto,
+      response.result as [],
       {
         excludeExtraneousValues: true,
       },

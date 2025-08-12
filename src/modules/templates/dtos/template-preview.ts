@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Expose, Transform } from 'class-transformer';
+import { Expose } from 'class-transformer';
 
-export class TemplateDto {
+export class TemplatePreviewDto {
   @Expose({ name: 'sys_id' })
   @ApiProperty({ description: 'DB unique ID of the template' })
   id: string;
@@ -17,13 +17,4 @@ export class TemplateDto {
   @Expose({ name: 'u_id' })
   @ApiProperty({ description: 'Unique umeric ID of the template form' })
   system_id: string;
-
-  @Expose({ name: 'u_show_form_instruction' })
-  @ApiProperty({ description: 'Show form instructions' })
-  @Transform(({ value }) => value === 'true')
-  show_instructions: boolean;
-
-  @Expose({ name: 'u_form_instructions' })
-  @ApiProperty({ description: 'Show submit button' })
-  instructions?: string;
 }
