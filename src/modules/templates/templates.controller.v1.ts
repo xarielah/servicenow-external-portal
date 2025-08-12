@@ -10,8 +10,6 @@ import {
   Query,
 } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiResponse } from '@nestjs/swagger';
-import { plainToInstance } from 'class-transformer';
-import { OptionDto } from './dtos/option.dto';
 import { SubmitProducerDto } from './dtos/submit-prod.dto';
 import { TemplateFormDto } from './dtos/template-form.dto';
 import { TemplateDto } from './dtos/template.dto';
@@ -93,11 +91,7 @@ export class TemplatesControllerV1 {
 
         if (['Select Box', 'Multiple Choice'].includes(field.type)) {
           const options = await this.templateService.getOptions(field.id);
-          res[i].options = options.map((option: any) =>
-            plainToInstance(OptionDto, option, {
-              excludeExtraneousValues: true,
-            }),
-          );
+          field.options = options;
         }
       }
 

@@ -211,7 +211,6 @@ export class TemplatesService {
     );
 
     const response = await res.json();
-    console.log('🚀 ~ TemplatesService ~ getOptions ~ response:', response);
     if (!response.result) return [];
 
     // Transform the response to an Option object array
