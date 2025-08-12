@@ -18,7 +18,7 @@ export class ServiceNowService {
   private readonly SECRET_NAME = 'servicenow';
 
   private async _getSecrets(): Promise<AwsSecretsDto> {
-    if (process.env.NODE_ENV !== 'production') {
+    if (process.env.NODE_ENV !== 'production' || process.env.ENV === 'render') {
       const localSecrets = this.configService.getOrThrow('secrets');
       return localSecrets;
     }
