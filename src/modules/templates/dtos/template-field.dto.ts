@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Expose } from 'class-transformer';
+import { Expose, Transform } from 'class-transformer';
 import { OptionDto } from './option.dto';
 
 export class TemplateFieldDto {
@@ -17,6 +17,7 @@ export class TemplateFieldDto {
 
   @Expose({ name: 'mandatory' })
   @ApiProperty({ description: 'Is the field mandatory' })
+  @Transform((mandatoryAttribute) => mandatoryAttribute.value === 'true')
   mandatory: boolean;
 
   @Expose({ name: 'name' })
