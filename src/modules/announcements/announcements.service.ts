@@ -13,7 +13,7 @@ export class AnnouncementsService {
       sysparm_exclude_reference_link: 'true',
       // Search for announcements flagged as "External Portal = true" and their From/To date ranges fit for today.
       sysparm_query:
-        'u_external_portal=true^from<=javascript:gs.endOfToday()^to>=javascript:gs.beginningOfToday()^ORtoISEMPTY',
+        'active=true^u_external_portal=true^from<=javascript:gs.endOfToday()^to>=javascript:gs.beginningOfToday()^ORtoISEMPTY',
     };
 
     const response = await this.serviceNowService.fetch(

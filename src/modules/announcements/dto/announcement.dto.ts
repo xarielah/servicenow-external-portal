@@ -7,7 +7,7 @@ export class AnnouncementDto {
     description: 'System unique ID string',
     example: 'c4f0c3c0a3a711edb9d90242ac120002',
   })
-  sys_id: string;
+  id: string;
 
   @Expose({ name: 'name' })
   @ApiProperty({
@@ -21,7 +21,7 @@ export class AnnouncementDto {
     description: 'Title of the announcement',
     example: 'Announcement title',
   })
-  title: string;
+  title?: string;
 
   @Expose({ name: 'summary' })
   @ApiProperty({
