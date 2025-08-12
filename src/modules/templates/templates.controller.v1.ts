@@ -5,11 +5,17 @@ import {
   HttpCode,
   HttpStatus,
   Logger,
+  Param,
   Post,
   Query,
 } from '@nestjs/common';
-import { GetTemplatesQueryDto } from './dtos/get-templates-query.dto';
-import { SubmitRecordProducerDto } from './dtos/submit-record-producer.dto';
+import { ApiBody, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { plainToInstance } from 'class-transformer';
+import { OptionDto } from './dtos/option.dto';
+import { SubmitProducerDto } from './dtos/submit-prod.dto';
+import { TemplateFormDto } from './dtos/template-form.dto';
+import { TemplateDto } from './dtos/template.dto';
+import { TemplatesQueryDto } from './dtos/templates-query.dto';
 import { TemplatesService } from './templates.service';
 
 @Controller({ path: 'templates', version: '1' })
@@ -19,8 +25,14 @@ export class TemplatesControllerV1 {
   private readonly logger = new Logger(TemplatesControllerV1.name);
 
   @Post('/')
+  @ApiOperation({ summary: `Get templates` })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Templates successfully fetched',
+    type: [TemplateDto],
+  })
   @HttpCode(HttpStatus.OK)
-  async getTemplates(@Query() query: GetTemplatesQueryDto) {
+  async getTemplates(@Query() query: TemplatesQueryDto) {
     try {
       this.logger.log(
         `Getting templates with params: limit=${query.limit}, search=${query.search}, skip=${query.skip}`,
@@ -35,8 +47,14 @@ export class TemplatesControllerV1 {
 
   @Post('/submit')
   @HttpCode(HttpStatus.CREATED)
+  @ApiOperation({ summary: `Submit record producer` })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: 'Record submitted and created',
+  })
+  @ApiBody({ type: SubmitProducerDto })
   async submitRecordProducer(
-    @Body() submitRecordProducerDto: SubmitRecordProducerDto,
+    @Body() submitRecordProducerDto: SubmitProducerDto,
   ) {
     try {
       const { templateId, variables } = submitRecordProducerDto;
@@ -50,5 +68,67 @@ export class TemplatesControllerV1 {
       this.logger.error('submitRecordProducer: ' + error);
       throw new BadRequestException();
     }
+  }
+
+  // TODO:
+  // Add KB fetch
+  // Add alerts fetch
+
+  @Post('/:templateId')
+  @ApiOperation({ summary: `Get template's fields and options` })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Fields and options successfully fetched',
+    type: TemplateFormDto,
+  })
+  @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Bad request' })
+  @HttpCode(HttpStatus.OK)
+  async getTemplateById(@Param('templateId') templateId: number) {
+    try {
+      if (typeof templateId !== 'number') throw new BadRequestException();
+      const templateIdStr = templateId.toString();
+
+      const template =
+        await this.templateService.getTemplateById(templateIdStr);
+
+      if (!template) throw new Error(`Missing template with id ${templateId}`);
+
+      let res = await this.templateService.getTemplateFields(templateIdStr);
+
+      for (let i = 0; i < res.length; i++) {
+        const field = res[i];
+
+        if (['Select Box', 'Multiple Choice'].includes(field.type)) {
+          const options = await this.templateService.getOptions(field.id);
+          res[i].options = options.map((option: any) =>
+            plainToInstance(OptionDto, option, {
+              excludeExtraneousValues: true,
+            }),
+          );
+        }
+      }
+
+      // Filter out unwanted field types so they don't reach to the frontend.
+      res = res.filter((field: any) => !['Custom'].includes(field.type));
+
+      return { ...template, fields: res };
+    } catch (error) {
+      this.logger.error('getIncident: ' + error);
+      throw new BadRequestException();
+    }
+  }
+
+  @Post('/knowledge/:templateId')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: `Get template's knowledge articles` })
+  async getTemplateKnowledge(@Param('templateId') templateId: number) {
+    return [];
+  }
+
+  @Post('/alerts/:templateId')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: `Get template's alerts / instructions` })
+  async getTemplateAlerts(@Param('templateId') templateId: number) {
+    return [];
   }
 }
