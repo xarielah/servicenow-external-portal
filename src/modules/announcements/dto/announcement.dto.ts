@@ -9,13 +9,6 @@ export class AnnouncementDto {
   })
   id: string;
 
-  @Expose({ name: 'name' })
-  @ApiProperty({
-    description: 'Name of the announcement',
-    example: 'Announcement 1',
-  })
-  name: string;
-
   @Expose({ name: 'title' })
   @ApiProperty({
     description: 'Title of the announcement',
@@ -29,4 +22,11 @@ export class AnnouncementDto {
     example: 'Announcement summary',
   })
   summary: string;
+
+  @Expose({ name: 'goto' })
+  @ApiProperty({
+    description: 'URL to redirect to when clicking on the announcement',
+    example: 'https://www.google.com',
+  })
+  goto?: string;
 }

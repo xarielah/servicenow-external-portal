@@ -8,7 +8,7 @@ export class AnnouncementsService {
 
   async getAnnouncements() {
     const extraParams: ExtraParams = {
-      sysparm_fields: 'sys_id,name,title,summary',
+      sysparm_fields: 'sys_id,title,summary,u_external_goto',
       sysparm_display_value: 'true',
       sysparm_exclude_reference_link: 'true',
       // Search for announcements flagged as "External Portal = true" and their From/To date ranges fit for today.
