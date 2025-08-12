@@ -54,8 +54,13 @@ export class TemplatesControllerV1 {
   ) {
     try {
       const { templateId, variables } = submitRecordProducerDto;
+      console.log(
+        '🚀 ~ TemplatesControllerV1 ~ submitRecordProducer ~ templateId, variables:',
+        templateId,
+        variables,
+      );
 
-      if (isNaN(Number(templateId))) throw new BadRequestException();
+      if (!templateId || !variables) throw new BadRequestException();
 
       const res = await this.templateService.submit({ templateId, variables });
 
