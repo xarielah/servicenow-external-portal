@@ -23,7 +23,7 @@ export class AnnouncementDto {
   })
   summary: string;
 
-  @Expose({ name: 'goto' })
+  @Expose({ name: 'u_external_goto' })
   @ApiProperty({
     description: 'URL to redirect to when clicking on the announcement',
     example: 'https://www.google.com',
