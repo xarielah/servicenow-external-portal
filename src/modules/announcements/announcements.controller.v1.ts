@@ -12,10 +12,10 @@ import { AnnouncementsService } from './announcements.service';
 import { AnnouncementDto } from './dto/announcement.dto';
 
 @Controller({ path: 'announcements', version: '1' })
-export class AnnouncementsController {
+export class AnnouncementsControllerV1 {
   constructor(private readonly announcementsService: AnnouncementsService) {}
 
-  private readonly logger = new Logger(AnnouncementsController.name);
+  private readonly logger = new Logger(AnnouncementsControllerV1.name);
 
   @Post('/')
   @ApiOperation({ summary: 'Get announcements' })
