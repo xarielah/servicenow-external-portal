@@ -54,11 +54,6 @@ export class TemplatesControllerV1 {
   ) {
     try {
       const { templateId, variables } = submitRecordProducerDto;
-      console.log(
-        '🚀 ~ TemplatesControllerV1 ~ submitRecordProducer ~ templateId, variables:',
-        templateId,
-        variables,
-      );
 
       if (!templateId || !variables) throw new BadRequestException();
 

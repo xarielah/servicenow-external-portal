@@ -75,7 +75,6 @@ export class TemplatesService {
         body: JSON.stringify({ variables }),
       },
     );
-    console.log('🚀 ~ TemplatesService ~ submit ~ res:', res);
 
     if (!res.ok) {
       const response = await res.json();
